@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: photonforge
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: photonforge
+  template:
+    metadata:
+      labels:
+        app: photonforge
+    spec:
+      containers:
+        - name: photonforge
+          image: photonforge:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: PF_PROVIDER
+              value: "mock"
+          resources:
+            limits:
+              nvidia.com/gpu: "1"
+            requests:
+              memory: "512Mi"
+              cpu: "500m"

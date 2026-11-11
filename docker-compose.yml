@@ -1,0 +1,15 @@
+services:
+  photonforge:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      PF_PROVIDER: ${PF_PROVIDER:-mock}
+      PF_MODEL: ${PF_MODEL:-h3-image-mock}
+      PF_API_KEY: ${PF_API_KEY:-}
+    volumes:
+      - photonforge_outputs:/root/.photonforge
+    restart: unless-stopped
+
+volumes:
+  photonforge_outputs:

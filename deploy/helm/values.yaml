@@ -1,0 +1,17 @@
+replicaCount: 2
+image:
+  repository: photonforge
+  tag: latest
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  port: 8000
+resources:
+  limits:
+    nvidia.com/gpu: 1
+env:
+  PF_PROVIDER: mock
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10

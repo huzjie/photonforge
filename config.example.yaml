@@ -1,0 +1,79 @@
+# photonforge 全量配置模板 —— 复制为 config.yaml 使用（也可以全部用环境变量 PF_* 覆盖）
+# 内核（flux/dit/vae/adapter/prompt/cascade/edit/engine）默认纯标准库、离线可跑，无需任何外部依赖。
+
+home: ~/.photonforge
+models_dir: ~/.photonforge/models
+output_dir: ~/.photonforge/outputs
+log_dir: ~/.photonforge/logs
+log_level: INFO
+
+# 默认后端：mock（离线，零依赖）| minimax | diffusers | comfyui | a1111 | openai
+provider: mock
+model: h3-image-mock
+api_key: null
+base_url: null          # 真实后端地址，如 https://api.minimax.io/v1
+
+# ---- Rectified Flow 采样 ----
+flux:
+  steps: 12             # 少步采样（8~20）
+  sampler: heun         # euler | heun | rk4 | dpm_solver | dpmpp_2m
+  guidance: 4.5         # CFG 引导强度
+  sigma_min: 0.0
+  sigma_max: 1.0
+  straightness: 1.0     # 路径直线度（1.0 = 纯直线 flow）
+
+# ---- DiT 主干 ----
+dit:
+  patch_size: 2
+  hidden_size: 512
+  depth: 12
+  num_heads: 8
+  mlp_ratio: 4.0
+  rope_theta: 10000.0
+
+# ---- VAE 潜空间 ----
+vae:
+  latent_scale: 8       # 8x 下采样（4K -> 512 潜空间）
+  latent_channels: 4
+  quantize: kl          # kl | vq
+  codebook_size: 16384
+
+# ---- 多参考图注入 ----
+adapter:
+  max_references: 16
+  ref_weights: []       # 每张参考图权重，如 [0.7, 0.4]
+  mode: style           # style | face | composition | mixed
+  cross_attn_scale: 1.0
+
+# ---- 长提示词 ----
+prompt:
+  encoder: t5           # t5 | clip | dual
+  max_length: 7500      # 字符
+  chunk_size: 512       # token 分块
+  enable_weighting: true
+
+# ---- 级联分辨率 ----
+cascade:
+  low_res: 512          # 低分辨率潜空间
+  high_res: 4096        # 最终 4K
+  refine_steps: 4       # 高分辨率细化步数
+  tiled_4k: true        # 4K 分块解码
+
+# ---- 编辑 ----
+edit:
+  blend_mode: feather
+  mask_blur: 8
+  strength: 0.75
+
+# ---- 控制面 ----
+api:
+  host: 127.0.0.1
+  port: 8000
+  auth_token: null
+  max_batch_size: 16
+
+# ---- 观测 ----
+observability:
+  tracing: true
+  metrics: true
+  audit: true

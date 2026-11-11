@@ -1,0 +1,6 @@
+apiVersion: v2
+name: photonforge
+description: 高速多参考图图像生成与编辑引擎
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
